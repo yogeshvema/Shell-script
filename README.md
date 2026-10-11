@@ -1,258 +1,221 @@
-# 🐚 Shell Scripting Guide
+# 🐚 Shell Scripting — General Guide
 
-A beginner-friendly reference for writing Bash shell scripts.
+A beginner-friendly introduction to Bash shell scripting.
 
 ---
 
 ## 📋 Table of Contents
-- [Important Comparison Operators](#important-comparison-operators)
-- [if / else Statement](#if--else-statement)
-- [for Loop](#for-loop)
+- [What is Shell Scripting?](#what-is-shell-scripting)
+- [Types of Shells](#types-of-shells)
+- [Creating Your First Script](#creating-your-first-script)
+- [Basic Commands](#basic-commands)
+- [Variables](#variables)
+- [User Input](#user-input)
+- [Comments](#comments)
+- [File Permissions](#file-permissions)
+- [Useful Script Options](#useful-script-options)
+- [Related Files](#related-files)
 
 ---
 
-## Important Comparison Operators
+## What is Shell Scripting?
 
-These operators are used inside `[ ]` conditions in shell scripts.
+A **shell script** is a text file containing a series of commands that the shell (command-line interpreter) executes one by one. It helps automate repetitive tasks, manage files, and run system operations without manual effort.
 
-| Operator | Meaning                  |
-|----------|--------------------------|
-| `-eq`    | Equal to                 |
-| `-ne`    | Not equal to             |
-| `-gt`    | Greater than             |
-| `-lt`    | Less than                |
-| `-ge`    | Greater than or equal to |
-| `-le`    | Less than or equal to    |
-
-> **Note:** For string comparison, use `=` (equal) and `!=` (not equal).
+**Why use shell scripts?**
+- ✅ Automate repetitive tasks
+- ✅ Schedule jobs (cron jobs)
+- ✅ Manage servers and deployments
+- ✅ Process files and data quickly
 
 ---
 
-## if / else Statement
+## Types of Shells
 
-### Syntax
+| Shell | Name              | Path          |
+|-------|-------------------|---------------|
+| `sh`  | Bourne Shell      | `/bin/sh`     |
+| `bash`| Bourne Again Shell| `/bin/bash`   |
+| `zsh` | Z Shell           | `/bin/zsh`    |
+| `ksh` | Korn Shell        | `/bin/ksh`    |
+| `csh` | C Shell           | `/bin/csh`    |
 
+> **Most commonly used:** `bash` (default on most Linux/macOS systems)
+
+---
+
+## Creating Your First Script
+
+### Step 1 — Create the file
 ```bash
-if [ condition ]; then
-    # Commands if condition is true
-elif [ another_condition ]; then
-    # Commands if another condition is true
-else
-    # Commands if all conditions are false
-fi
+touch myscript.sh
 ```
 
-### Example 1 — Check if a number is positive, negative, or zero
+### Step 2 — Add the shebang line at the top
+Every shell script starts with a **shebang** (`#!`) to tell the OS which interpreter to use.
+```bash
+#!/bin/bash
+```
 
+### Step 3 — Write your commands
 ```bash
 #!/bin/bash
 
-num=5
+echo "Hello, World!"
+echo "My first shell script!"
+```
 
-if [ "$num" -gt 0 ]; then
-    echo "The number is Positive"
-elif [ "$num" -lt 0 ]; then
-    echo "The number is Negative"
-else
-    echo "The number is Zero"
-fi
+### Step 4 — Give execute permission
+```bash
+chmod +x myscript.sh
+```
+
+### Step 5 — Run the script
+```bash
+./myscript.sh
 ```
 
 **Output:**
 ```
-The number is Positive
+Hello, World!
+My first shell script!
 ```
 
 ---
 
-### Example 2 — Check if a file exists
+## Basic Commands
 
+| Command        | Description                          | Example                        |
+|----------------|--------------------------------------|--------------------------------|
+| `echo`         | Print text to the terminal           | `echo "Hello"`                 |
+| `ls`           | List files in a directory            | `ls -la`                       |
+| `pwd`          | Print current working directory      | `pwd`                          |
+| `cd`           | Change directory                     | `cd /home/user`                |
+| `cp`           | Copy files or directories            | `cp file.txt backup.txt`       |
+| `mv`           | Move or rename files                 | `mv old.txt new.txt`           |
+| `rm`           | Remove files or directories          | `rm file.txt`                  |
+| `mkdir`        | Create a new directory               | `mkdir myfolder`               |
+| `cat`          | Display file contents                | `cat file.txt`                 |
+| `grep`         | Search for a pattern in a file       | `grep "error" log.txt`         |
+| `chmod`        | Change file permissions              | `chmod +x script.sh`           |
+| `ps`           | Display running processes            | `ps -ef`                       |
+| `df`           | Show disk space usage                | `df -h`                        |
+| `curl`         | Fetch data from a URL                | `curl https://example.com`     |
+| `wget`         | Download files from the web          | `wget https://example.com/file`|
+
+---
+
+## Variables
+
+Variables store data that can be reused in the script.
+
+### Declaring a Variable
 ```bash
 #!/bin/bash
 
-file="/etc/passwd"
+name="Yogesh"
+age=25
 
-if [ -f "$file" ]; then
-    echo "File exists: $file"
-else
-    echo "File does NOT exist."
-fi
+echo "Name: $name"
+echo "Age: $age"
 ```
 
 **Output:**
 ```
-File exists: /etc/passwd
+Name: Yogesh
+Age: 25
 ```
+
+### Rules for Variables
+- No spaces around `=` → ✅ `name="Yogesh"` | ❌ `name = "Yogesh"`
+- Access variable with `$` → `$name`
+- Always quote variables → `"$name"` to avoid errors
 
 ---
 
-### Example 3 — Compare two numbers
+## User Input
+
+Use the `read` command to take input from the user.
 
 ```bash
 #!/bin/bash
 
-a=10
-b=20
+echo "Enter your name:"
+read name
 
-if [ "$a" -eq "$b" ]; then
-    echo "a and b are Equal"
-elif [ "$a" -gt "$b" ]; then
-    echo "a is Greater than b"
-else
-    echo "a is Less than b"
-fi
+echo "Hello, $name! Welcome to Shell Scripting."
 ```
 
 **Output:**
 ```
-a is Less than b
+Enter your name:
+Yogesh
+Hello, Yogesh! Welcome to Shell Scripting.
 ```
 
 ---
 
-### Example 4 — String comparison
+## Comments
+
+Comments are lines ignored by the shell. Use them to explain your code.
 
 ```bash
 #!/bin/bash
 
-name="yogesh"
+# This is a single-line comment
+echo "This line runs"   # This is an inline comment
 
-if [ "$name" = "yogesh" ]; then
-    echo "Hello, Yogesh! Welcome."
-else
-    echo "You are not Yogesh."
-fi
-```
-
-**Output:**
-```
-Hello, Yogesh! Welcome.
+: '
+This is a
+multi-line comment block
+'
+echo "Done"
 ```
 
 ---
 
-## for Loop
+## File Permissions
 
-### Syntax
+Shell scripts need execute permission to run.
 
-```bash
-for variable in list; do
-    # Commands to execute
-done
+| Command           | Description                          |
+|-------------------|--------------------------------------|
+| `chmod +x file.sh`| Add execute permission               |
+| `chmod 755 file.sh`| Owner can read/write/execute; others can read/execute |
+| `ls -l file.sh`   | Check current permissions            |
+
+### Permission Symbols
+
 ```
-
-### Example 1 — Loop through a list of items
-
-```bash
-#!/bin/bash
-
-for fruit in apple banana mango orange; do
-    echo "Fruit: $fruit"
-done
-```
-
-**Output:**
-```
-Fruit: apple
-Fruit: banana
-Fruit: mango
-Fruit: orange
+-rwxr-xr-x
+ ↑↑↑ ↑↑↑ ↑↑↑
+ │   │   └── Others: read + execute
+ │   └─────── Group: read + execute
+ └─────────── Owner: read + write + execute
 ```
 
 ---
 
-### Example 2 — Loop through a range of numbers
+## Useful Script Options
+
+Add these at the top of your scripts for safer execution.
 
 ```bash
 #!/bin/bash
 
-for i in {1..5}; do
-    echo "Number: $i"
-done
-```
-
-**Output:**
-```
-Number: 1
-Number: 2
-Number: 3
-Number: 4
-Number: 5
+set -e          # Exit immediately if any command fails
+set -x          # Print each command before executing (debug mode)
+set -o pipefail # Exit if any command in a pipeline fails
 ```
 
 ---
 
-### Example 3 — C-style for loop
+## Related Files
 
-```bash
-#!/bin/bash
-
-for (( i=1; i<=5; i++ )); do
-    echo "Count: $i"
-done
-```
-
-**Output:**
-```
-Count: 1
-Count: 2
-Count: 3
-Count: 4
-Count: 5
-```
-
----
-
-### Example 4 — for loop with if/else inside (Combined)
-
-```bash
-#!/bin/bash
-
-# Check each number from 1 to 10 and print if it's Even or Odd
-
-for i in {1..10}; do
-    if [ $((i % 2)) -eq 0 ]; then
-        echo "$i is Even"
-    else
-        echo "$i is Odd"
-    fi
-done
-```
-
-**Output:**
-```
-1 is Odd
-2 is Even
-3 is Odd
-4 is Even
-5 is Odd
-6 is Even
-7 is Odd
-8 is Even
-9 is Odd
-10 is Even
-```
-
----
-
-### Example 5 — Loop over files in a directory
-
-```bash
-#!/bin/bash
-
-for file in /etc/*.conf; do
-    echo "Config file found: $file"
-done
-```
-
----
-
-## 💡 Quick Tips
-
-- Always **quote your variables** (`"$var"`) to avoid word-splitting issues.
-- Use `set -e` at the top of your script to exit on any error.
-- Use `set -x` for debugging — it prints each command before executing it.
-- `fi` closes an `if` block; `done` closes a `for` loop.
+| File          | Description                                      |
+|---------------|--------------------------------------------------|
+| [`loops.md`](./loops.md)   | if/else statements and for loops with examples |
+| [`yogesh.sh`](./yogesh.sh) | Sample shell script with commands              |
 
 ---
 
